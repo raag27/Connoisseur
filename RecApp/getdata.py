@@ -38,6 +38,13 @@ def get_restaurants_add_links():
                 for j in range(0,len(cuisines)):
                     cuisine_node = Cuisine.nodes.get(name = cuisines[j].strip())
                     var["id"].SERVES.connect(cuisine_node)
+                try:
+                    name = Location.nodes.get(locality = var['location']['locality'])
+                except Location.DoesNotExist:
+                    data["locality"] = Location(locality = var['location']['locality']).save()
+            loc = Location.nodes.get(locality=var['location']['locality'])
+            var["id"].In.connect(loc,{'addr':var['location']['address'],'lat':var['location']['latitude'],'long':var['location']['longitude'],\
+            'zipcode':var['location']['zipcode']})
 
 def find_res_with_cuisine():
         query = """MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine)<-[:SERVES]-(m:Restaurant)
