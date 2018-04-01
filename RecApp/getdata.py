@@ -48,6 +48,24 @@ def get_restaurants_add_links():
 				var["id"].IN.connect(loc,{'addr':var_loc['address'],'lat':var_loc['latitude'],'long':var_loc['longitude'],\
 				'zipcode':var_loc['zipcode']})
 
+def get_user():
+    f = open('C:/Users/hiremath/New folder/Restaurant.csv', 'r')
+    reader = csv.reader(f)
+    flag = 0
+    for row in reader:
+        if flag == 0:
+            flag = 1
+        else:
+            lists = row[0].split('\t')
+            User(uid=lists[0],name=lists[1],phone_no = lists[2],email_id = lists[3],age = lists[4],gender=lists[5]).save()
+
+    f.close()
+
+def relation():
+    query = "MATCH (p1:User), (p2:User) WITH p1, p2 WHERE rand() < 0.1 AND p1<>p2 MERGE (p1)-[:FRIENDS]->(p2) RETURN DISTINCT p1, p2"
+    results, meta = db.cypher_query(query)
+
+
 def find_res_with_cuisine():
         query = """MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine)<-[:SERVES]-(m:Restaurant)
                    WHERE n<>m 
@@ -57,3 +75,5 @@ def find_res_with_cuisine():
             print(r[i])
 
 get_restaurants_add_links()
+#get_user()
+relation()

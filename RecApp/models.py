@@ -39,5 +39,13 @@ class Restaurant(StructuredNode):
 
 
 
+class User(StructuredNode):
+    uid = UniqueIdProperty()
+    name = StringProperty()
+    phone_no = StringProperty()
+    email_id = EmailProperty()
+    age = IntegerProperty()
+    gender = StringProperty()
 
+    FRIEND = Relationship('User','FRIENDS')
 
