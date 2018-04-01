@@ -1,5 +1,5 @@
 from django.db import models
-from neomodel import (BooleanProperty,config,JSONProperty,FloatProperty,StructuredNode, StructuredRel,StringProperty, IntegerProperty,UniqueIdProperty, RelationshipTo, RelationshipFrom)
+from neomodel import (BooleanProperty,config,JSONProperty,FloatProperty,StructuredNode, StructuredRel,StringProperty, IntegerProperty,UniqueIdProperty, RelationshipTo, RelationshipFrom,EmailProperty,Relationship)
 # Create your models here.
 # config.DATABASE_URL = 'bolt://neo4j:Recommender@localhost:11002'
 
@@ -37,7 +37,8 @@ class Restaurant(StructuredNode):
         print(res)
     #IN = RelationshipTo(Location,'IN')
 
-
+class Rated(StructuredRel):
+    rating = FloatProperty()
 
 class User(StructuredNode):
     uid = UniqueIdProperty()
@@ -48,4 +49,5 @@ class User(StructuredNode):
     gender = StringProperty()
 
     FRIEND = Relationship('User','FRIENDS')
+    RATED = RelationshipTo(Restaurant,'RATED',model = Rated)
 
