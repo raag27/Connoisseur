@@ -49,7 +49,7 @@ def get_restaurants_add_links():
 				'zipcode':var_loc['zipcode']})
 
 def get_user():
-    f = open('C:/Users/hiremath/New folder/Restaurant.csv', 'r')
+    f = open('C:/Users/Raagini/Desktop/Amazon-RestaurantRecommender/Connoisseur/RecApp/User.csv', 'r')
     reader = csv.reader(f)
     flag = 0
     for row in reader:
@@ -61,12 +61,28 @@ def get_user():
 
     f.close()
 
-def relation():
+def friends_relation():
     query = "MATCH (p1:User), (p2:User) WITH p1, p2 WHERE rand() < 0.1 AND p1<>p2 MERGE (p1)-[:FRIENDS]->(p2) RETURN DISTINCT p1, p2"
     results, meta = db.cypher_query(query)
 
-
+def user_rated_restaurant():
+	for i in range(1,15):
+		rand_val= random.uniform(1,5)
+		rand_val = round(rand_val,1)
+		user,umeta = db.cypher_query("MATCH (p:User) return p.uid order by rand() limit 1")
+		rest,rmeta = db.cypher_query("MATCH (r:Restaurant) return r.rid order by rand() limit 1")
+		user_id = user[0][0]
+		res_id = rest[0][0]
+		params = {
+			'user' : user_id,
+			'rand_key' : rand_val,
+			'restaurant' : res_id
+		}
+		query = "MATCH (u:User{uid : $user}),(r:Restaurant{rid:$restaurant}) WITH  u,r MERGE (u)-[ra:RATED]-(r) ON CREATE SET ra.rating = $rand_key return ra ORDER BY rand() LIMIT 1"
+		results, meta = db.cypher_query(query,params)
+	
 def find_res_with_cuisine():
+	
         query = """MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine)<-[:SERVES]-(m:Restaurant)
                    WHERE n<>m 
                    WITH n,COLLECT(c.name) AS CUISINES,m return n.name,CUISINES,m.name"""
@@ -74,6 +90,4 @@ def find_res_with_cuisine():
         for i in range(0,len(r)):
             print(r[i])
 
-get_restaurants_add_links()
-#get_user()
-relation()
+user_rated_restaurant()
