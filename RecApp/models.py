@@ -14,12 +14,11 @@ class Locrel(StructuredRel):
     addr = StringProperty(required=True)
     lat = FloatProperty()
     long = FloatProperty()
-    zipcode = IntegerProperty(NULL = True)
+    #zipcode = IntegerProperty(NULL = True)
 
 class Restaurant(StructuredNode):
     rid = UniqueIdProperty()
     name = StringProperty()
-    pno = StringProperty()
     avg_cost = FloatProperty()
     rating = FloatProperty()
     ratings_count  = IntegerProperty()
