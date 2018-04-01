@@ -28,23 +28,25 @@ def get_cuisines():
 
 
 def get_restaurants_add_links():
-        url = main_api + 'search?start=0&q=Bangalore&lat=12.9716&lon=77.5946'
-        data = returnresponse(url)
-        for i in range(0,20):
-                var = data["restaurants"][i]["restaurant"]
-                var["id"] = Restaurant(rid = var["id"],name = var["name"],pno = var["phone_no"],rating = var["user_rating"]["aggregate_rating"]).save()
-                cuisines = []
-                cuisines = var["cuisines"].split(',')
-                for j in range(0,len(cuisines)):
-                    cuisine_node = Cuisine.nodes.get(name = cuisines[j].strip())
-                    var["id"].SERVES.connect(cuisine_node)
-                try:
-                    name = Location.nodes.get(locality = var['location']['locality'])
-                except Location.DoesNotExist:
-                    data["locality"] = Location(locality = var['location']['locality']).save()
-            loc = Location.nodes.get(locality=var['location']['locality'])
-            var["id"].In.connect(loc,{'addr':var['location']['address'],'lat':var['location']['latitude'],'long':var['location']['longitude'],\
-            'zipcode':var['location']['zipcode']})
+		url = main_api + 'search?start=0&q=Bangalore&lat=12.9716&lon=77.5946'
+		data = returnresponse(url)
+		for i in range(0,20):
+				var = data["restaurants"][i]["restaurant"]
+				var["id"] = Restaurant(rid = var["id"],name = var["name"],rating = var["user_rating"]["aggregate_rating"],ratings_count = var["user_rating"]["votes"],avg_cost = var["average_cost_for_two"],url = var["url"],has_online_delivery = var["has_online_delivery"],has_table_booking = var["has_table_booking"]).save()
+
+				cuisines = []
+				cuisines = var["cuisines"].split(',')
+				for j in range(0,len(cuisines)):
+					cuisine_node = Cuisine.nodes.get(name = cuisines[j].strip())
+					var["id"].SERVES.connect(cuisine_node)
+				
+				var_loc = var["location"]
+				try:
+					loc = Location.nodes.get(locality = var_loc["locality"])
+				except Location.DoesNotExist:
+					loc = Location(locality = var_loc["locality"]).save()
+				var["id"].IN.connect(loc,{'addr':var_loc['address'],'lat':var_loc['latitude'],'long':var_loc['longitude'],\
+				'zipcode':var_loc['zipcode']})
 
 def find_res_with_cuisine():
         query = """MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine)<-[:SERVES]-(m:Restaurant)
@@ -54,4 +56,4 @@ def find_res_with_cuisine():
         for i in range(0,len(r)):
             print(r[i])
 
-get_restaurants()
+get_restaurants_add_links()
