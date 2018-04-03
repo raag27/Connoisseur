@@ -24,6 +24,7 @@ def find_res_with_cuisine():
 		for i in range(0,len(r)):
 			print(r[i])
 
+<<<<<<< HEAD
 def friend_similarity(uname,rate):
 	params = {
 	'name' : uname,
@@ -39,3 +40,17 @@ def friend_similarity(uname,rate):
 		print(res[i])
 	
 friend_similarity(sys.argv[1],sys.argv[2])
+=======
+def find_res_with_cusine_para(cuisine):
+    for j in cuisine:
+        query = "MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine) WHERE c.name='" + j + "' RETURN n.name,c.name"
+        r, res = db.cypher_query(query)
+        for i in range(0, len(r)):
+            print(r[i])
+
+def friend_similarity():
+	
+	"""Find Restaurants that my friends have rated 3.5 and above and that serve the cuisines that I like"""
+
+find_res_with_cusine_para(['Italian','American'])	
+>>>>>>> 6ed5d7f689ce650e431a5949db4480e577cf5b2c
