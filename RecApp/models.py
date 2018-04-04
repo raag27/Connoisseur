@@ -3,6 +3,10 @@ from neomodel import (BooleanProperty,config,JSONProperty,FloatProperty,Structur
 # Create your models here.
 # config.DATABASE_URL = 'bolt://neo4j:Recommender@localhost:11002'
 
+
+class Price(StructuredNode):
+    cost = FloatProperty(unique = True)
+
 class Cuisine(StructuredNode):
     cid = UniqueIdProperty()
     name = StringProperty()
@@ -28,7 +32,7 @@ class Restaurant(StructuredNode):
 
     SERVES = RelationshipTo(Cuisine,'SERVES')
     IN = RelationshipTo(Location,'IN',model=Locrel)
-
+    WITH = RelationshipTo(Price,'WITH_COST')
     def find_res_with_cuisine(self):
         query = """MATCH (n:Restaurant)->[:SERVES]->(c:Cuisine)<-[:SERVES]<-(m:Restaurant)
                    WHERE n<>m 
@@ -54,3 +58,4 @@ class User(StructuredNode):
     FRIEND = Relationship('User','FRIENDS')
     RATED = RelationshipTo(Restaurant,'RATED',model = Rated)
     LIKES = RelationshipTo(Cuisine,'LIKES',model = Liked)
+
