@@ -48,6 +48,7 @@ def get_restaurants_add_links():
 				var["id"].IN.connect(loc,{'addr':var_loc['address'],'lat':var_loc['latitude'],'long':var_loc['longitude'],\
 				'zipcode':var_loc['zipcode']})
 
+
 def get_user():
     f = open('C:/Users/Raagini/Desktop/Amazon-RestaurantRecommender/Connoisseur/RecApp/User.csv', 'r')
     reader = csv.reader(f)
