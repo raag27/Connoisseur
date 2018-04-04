@@ -38,10 +38,6 @@ def friend_similarity(uname,rate):
 	for i in range(0,len(res)):
 		print(res[i])
 	
-
-
-
-
 def find_res_with_cusine_para(cuisine):
     for j in cuisine:
         query = "MATCH (n:Restaurant)-[:SERVES]->(c:Cuisine) WHERE c.name='" + j + "' RETURN n.name,c.name"
@@ -49,5 +45,21 @@ def find_res_with_cusine_para(cuisine):
         for i in range(0, len(r)):
             print(r[i])
 
-find_res_with_cusine_para(['Italian','American'])	
+def jaccard_similarity(rname):
+	"""Find similar restaurants in terms of price range, cuisine and locality"""
+	query = """MATCH (r:Restaurant)-[:SERVES|:IN|:WITH_COST]->(n)<-[:SERVES|:IN|:WITH_COST]-(other:Restaurant)
+				with r,other,count(n) as intersection 
+				MATCH (r)-[:SERVES|:IN|:WITH_COST]->(r1)
+				with r,other,intersection,collect(distinct(id(r1))) as u1
+				MATCH (other)-[:SERVES|:IN|:WITH_COST]->(r2)
+				with r,other,intersection,u1,collect(distinct(id(r2))) as u2
+				with r,other,intersection,u1,u2
+				with r,other,intersection,u1 + filter(x in u2 WHERE NOT  x IN u1) as union ,u1,u2
+				return r.name,other.name,((1.0*intersection)/(size(union))) as jaccard order by jaccard desc limit 20"""
+	res,meta = db.cypher_query(query)
+	for i in range(0,len(res)):
+		print(res[i])
+			
+jaccard_similarity("Farzi Cafe")
+#find_res_with_cusine_para(['Italian','American'])	
 #friend_similarity(sys.argv[1],sys.argv[2])
