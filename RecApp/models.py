@@ -47,6 +47,9 @@ class Rated(StructuredRel):
 class Liked(StructuredRel):
     liking = IntegerProperty()
 
+class Sim(StructuredRel):
+    similarity = FloatProperty()
+    
 class User(StructuredNode):
     uid = UniqueIdProperty()
     name = StringProperty()
@@ -58,4 +61,4 @@ class User(StructuredNode):
     FRIEND = Relationship('User','FRIENDS')
     RATED = RelationshipTo(Restaurant,'RATED',model = Rated)
     LIKES = RelationshipTo(Cuisine,'LIKES',model = Liked)
-
+    SIM = RelationshipTo(Restaurant,'SIMILARITY',model = Sim)

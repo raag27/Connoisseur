@@ -61,5 +61,34 @@ def jaccard_similarity(rname):
 		print(res[i])
 			
 jaccard_similarity("Farzi Cafe")
+
+"""def colaborative():
+    query = "MATCH (p1:User)-[x:RATED]->(r:Restaurant)<-[y:RATED]-(p2:User) WITH SUM(x.rating * y.rating) AS xyDotProduct,\
+    SQRT(REDUCE(xDot = 0.0, a IN COLLECT(x.rating) | xDot + a^2)) AS xLength,\
+    SQRT(REDUCE(yDot = 0.0, b IN COLLECT(y.rating) | yDot + b^2)) AS yLength,p1, p2 MERGE (p1)-[s:SIMILARITY]-(p2)\
+    SET s.similarity = xyDotProduct / (xLength * yLength)"
+    r,res = db.cypher_query(query)
+    query1 = "MATCH (p1:User {name:'Aishwarya'})-[s:SIMILARITY]-(p2:User) WITH p2, s.similarity AS sim ORDER BY sim DESC LIMIT 5 \
+    RETURN p2.name AS Neighbor, sim AS Similarity"
+    r1,res = db.cypher_query(query1)
+    for i in range(0,len(r1)):
+        print(r1[i])
+
+colaborative()"""
+
+"""def weighted_content(cuisine,loc):
+    params = {
+        'cuisine':cuisine,
+        'loc' : loc,
+    }
+    query = "MATCH (c:Cuisine) WHERE c.name ='" + cuisine + "'MATCH (r:Restaurant)-[:SERVES]->(c) \
+    WITH r, COUNT(*) AS gs \
+    OPTIONAL MATCH (r)-[i:IN]->(l:Location {locality:'"+loc+"'}) WITH r, gs, COUNT(i) AS as \
+    RETURN r.name AS recommendation, (5*gs)+(3*as) AS score ORDER BY score DESC LIMIT 100"
+    r,res = db.cypher_query(query,params)
+    for i in range(0, len(r)):
+        print(r[i])
+
+weighted_content('American','Church Street')"""
 #find_res_with_cusine_para(['Italian','American'])	
 #friend_similarity(sys.argv[1],sys.argv[2])
