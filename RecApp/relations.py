@@ -45,4 +45,18 @@ def likes_relation():
 		query = "MATCH (u:User{uid : $user}),(c:Cuisine{cid:$cuisine}) WITH  u,c MERGE (u)-[l:LIKES]-(c) return l order by rand() LIMIT 1"
 		results, meta = db.cypher_query(query,params)
 
-likes_relation()
+def with_relation():
+	query = """ MATCH (r:Restaurant) return r.rid """
+	res,meta = db.cypher_query(query)
+	for i in range (0,len(res)):
+		n = Restaurant.nodes.get(rid = res[i][0])
+		try:
+			avg_cost = Price.nodes.get(cost  = n.avg_cost)
+		except Price.DoesNotExist:
+			avg_cost = Price(cost = n.avg_cost).save()
+		n.WITH.connect(avg_cost)
+		
+		
+	
+with_relation()
+#likes_relation()
