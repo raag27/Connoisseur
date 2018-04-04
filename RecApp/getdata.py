@@ -62,5 +62,3 @@ def get_user():
     f.close()
 
 
-
-user_rated_restaurant()
