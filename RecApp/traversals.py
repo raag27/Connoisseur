@@ -16,14 +16,24 @@ def friend_similarity(uname, rate):
     for i in range(0, len(res)):
         print(res[i])
 
+def get_top_restaurant(uname):
+    params = {
+        'uname':uname,
+    }
+    query = "MATCH (U:User {name:$uname})-[r:RATED]->(res:Restaurant) with max(r.rating) as MAX_RATING \
+    MATCH (U:User {name:$uname})-[r:RATED]->(res:Restaurant) where r.rating = MAX_RATING return res.rid order by rand() limit 2 "
+    result,meta = db.cypher_query(query,params)
+    return result
 
-def jaccard_similarity(rlist):
-    for rname in rlist:
+def jaccard_similarity(uname):
+    rlist= get_top_restaurant(uname)
+    for rid in rlist:
         params = {
-            'rname':rname,
+            'rid':rid[0],
         }
         """Find similar restaurants in terms of price range, cuisine and locality"""
-        query = "MATCH (r:Restaurant {name:'"+rname+"'})-[:SERVES|:IN|:WITH_COST]->(n)<-[:SERVES|:IN|:WITH_COST]-(other:Restaurant)\
+        query = "MATCH (r:Restaurant {rid:$rid})-[:SERVES|:IN|:WITH_COST]->(n)<-[:SERVES|:IN|:WITH_COST]-(other:Restaurant)\
+                    WHERE r.name <> other.name\
                     with r,other,count(n) as intersection \
                     MATCH (r)-[:SERVES|:IN|:WITH_COST]->(r1)\
                     with r,other,intersection,collect(distinct(id(r1))) as u1\
@@ -31,10 +41,11 @@ def jaccard_similarity(rlist):
                     with r,other,intersection,u1,collect(distinct(id(r2))) as u2 \
                     with r,other,intersection,u1,u2 \
                     with r,other,intersection,u1 + filter(x in u2 WHERE NOT  x IN u1) as union ,u1,u2 \
-                    return r.name,other.name,((1.0*intersection)/(size(union))) as jaccard order by jaccard desc limit 3"
-        res, meta = db.cypher_query(query)
+                    return r.rid,other.rid,((1.0*intersection)/(size(union))) as jaccard order by jaccard desc limit 3"
+        res, meta = db.cypher_query(query,params)
         for i in range(0, len(res)):
             print(res[i])
+        return res
 
 
 def colaborative(uname):
@@ -60,20 +71,25 @@ def colaborative(uname):
     query3 = "MATCH (p1:User {name:'"+uname+"'})-[s:SIMILARITY]-() DELETE s"
     r3,res=db.cypher_query(query3)
 
-def weighted_content(cuisine,loc):
-    params = {
-        'cuisine':cuisine,
-        'loc' : loc,
-    }
-    query = "MATCH (c:Cuisine) WHERE c.name ='" + cuisine + "'MATCH (r:Restaurant)-[:SERVES]->(c) \
-    WITH r, COUNT(*) AS gs \
-    OPTIONAL MATCH (r)-[i:IN]->(l:Location {locality:'"+loc+"'}) WITH r, gs, COUNT(i) AS as \
-    RETURN r.name AS recommendation, (5*gs)+(3*as) AS score ORDER BY score DESC LIMIT 100"
-    r,res = db.cypher_query(query,params)
-    for i in range(0, len(r)):
-        print(r[i])
+def weighted_content(uname,cuisine,loc):
+    rlist = jaccard_similarity(uname)
+    for id in rlist:
+        print(id[1])
+        params = {
+            'orig_id' = id[0],
+            'other_id' = id[1],
+        }
+        query = "MATCH (r:Restaurant{rid:$other_id})-[:SERVES]->(c)<-[:SERVES]-(other:Restaurant) where r<>other and other.rid<>$orig_id\
+        with r,other,count(c) as c_count\
+        MATCH (r:Restaurant{rid:$other_id})-[:IN]->(l)<-[:IN]-(other:Restaurant) where r<>other and other.rid<>$orig_id\
+                with r,other,c_count,count(l) as l_count\
+        RETURN r.name AS recommendation, (5*c_count)+(3*l_count) AS score ORDER BY score DESC LIMIT 10"
 
-#weighted_content('American','Church Street')
+        r,res = db.cypher_query(query,params)
+        for i in range(0, len(r)):
+            print(r[i])
+
+weighted_content('Soumya',6,7)
 #colaborative('Saloni')
-#jaccard_similarity(['Koramangala Social','Paakashala'])
+#jaccard_similarity('Soumya')
 #friend_similarity(sys.argv[1],sys.argv[2])

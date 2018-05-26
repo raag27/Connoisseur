@@ -14,12 +14,10 @@ def signup(request):
 
 def recommend(request):
         form = get_reco_form()
-        if request.method == "POST":
+        print("hello")
+        if request.method == 'POST':
                 username = request.POST.get('name')
                 cuisine = request.POST.get('cuisine')
                 location = request.POST.get('location')
-                print(cuisine)
-                print(3+5)
-                print(location)
                 weighted_content(cuisine,location)
         return render(request,'RecApp/recommendations.html',{'form':form})
