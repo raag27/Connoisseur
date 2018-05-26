@@ -10,7 +10,7 @@ from neomodel import (config, StructuredNode, StringProperty, IntegerProperty, U
 from py2neo import Graph, Node, Relationship
 
 # graph = Graph('http://localhost:11001/db/data')
-config.DATABASE_URL = 'bolt://neo4j:Test@localhost:11002'
+config.DATABASE_URL = 'bolt://neo4j:aishwarya@localhost:7687'
 main_api = "https://developers.zomato.com/api/v2.1/"
 header = {'X-Zomato-API-Key': "4138367c7bc3dcc4e3bd4f964514c622"}
 

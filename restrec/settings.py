@@ -17,7 +17,7 @@ from neomodel import config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-config.DATABASE_URL = 'bolt://neo4j:neo4j@localhost:11002'
+config.DATABASE_URL = 'bolt://neo4j:aishwarya@localhost:7687'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'restrec.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:test@localhost:7687')
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:aishwarya@localhost:7687')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -89,7 +89,7 @@ DATABASES = {
 NEO4J_DATABASES = {
 'default' : {
 'HOST':'localhost',
-'PORT':11002,
+'PORT':7687,
 'ENDPOINT':'/db/data'
 }
 }

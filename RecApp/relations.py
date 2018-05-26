@@ -10,7 +10,7 @@ from neomodel import (config, StructuredNode, StringProperty, IntegerProperty, U
 from py2neo import Graph, Node, Relationship
 
 # graph = Graph('http://localhost:11001/db/data')
-config.DATABASE_URL = 'bolt://neo4j:Test@localhost:11002'
+config.DATABASE_URL = 'bolt://neo4j:aishwarya@localhost:7687'
 
 def friends_relation():
     query = "MATCH (p1:User), (p2:User) WITH p1, p2 WHERE rand() < 0.1 AND p1<>p2 MERGE (p1)-[:FRIENDS]->(p2) RETURN DISTINCT p1, p2"
