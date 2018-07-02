@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Get Recommendation!</title>
+    <title>Rating</title>
 </head>
 <body>
-    <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                             <b>Enter your preferences for cuisine, location and price by rating between 0-5</b>
                             {% include 'RecApp/form_template.html' %}
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">

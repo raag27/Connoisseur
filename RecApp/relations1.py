@@ -76,5 +76,5 @@ def create_node():
     friend(opfile)
 
 
-create_node()
+#create_node()
 
